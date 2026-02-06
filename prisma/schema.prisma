@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Schedule {
+  II
+  III
+  IV
+  V
+}
+
+enum MedicationUnit {
+  mg
+  ml
+  mcg
+}
+
+enum UserRole {
+  NURSE
+  WITNESS
+  ADMIN
+}
+
+enum TransactionType {
+  CHECKOUT
+  RETURN
+  WASTE
+}
+
+model Medication {
+  id           String          @id @default(uuid())
+  name         String
+  schedule     Schedule
+  unit         MedicationUnit
+  stockQuantity Float          @default(0)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  transactions Transaction[]
+
+  @@map("medications")
+}
+
+model User {
+  id                    String        @id @default(uuid())
+  email                 String        @unique
+  name                  String
+  role                  UserRole
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  nurseTransactions     Transaction[] @relation("NurseTransactions")
+  witnessTransactions   Transaction[] @relation("WitnessTransactions")
+  auditLogs             AuditLog[]
+
+  @@map("users")
+}
+
+model Transaction {
+  id           String          @id @default(uuid())
+  medicationId String
+  nurseId      String
+  witnessId    String
+  type         TransactionType
+  quantity     Float
+  notes        String?
+  createdAt    DateTime        @default(now())
+
+  medication   Medication      @relation(fields: [medicationId], references: [id])
+  nurse        User            @relation("NurseTransactions", fields: [nurseId], references: [id])
+  witness      User            @relation("WitnessTransactions", fields: [witnessId], references: [id])
+
+  @@map("transactions")
+}
+
+model AuditLog {
+  id            String   @id @default(uuid())
+  action        String
+  entityType    String
+  entityId      String
+  performedById String
+  details       Json
+  createdAt     DateTime @default(now())
+
+  performedBy   User     @relation(fields: [performedById], references: [id])
+
+  @@map("audit_logs")
+}

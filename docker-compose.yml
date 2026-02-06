@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:18.1-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: medication_inventory
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/medication_inventory?schema=public
+      PORT: "3000"
+      # DISCLAIMER: If using WINDOWS you should uncomment if you want hot reload
+      # CHOKIDAR_USEPOLLING: true
+    volumes:
+      - ./src:/app/src
+      - ./prisma:/app/prisma
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
