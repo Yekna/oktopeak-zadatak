@@ -34,7 +34,7 @@ enum TransactionType {
 
 model Medication {
   id           String          @id @default(uuid())
-  name         String
+  name         String          @unique
   schedule     Schedule
   unit         MedicationUnit
   stockQuantity Float          @default(0)
