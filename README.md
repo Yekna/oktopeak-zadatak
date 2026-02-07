@@ -109,3 +109,4 @@ npm run dev
 - **Docker volumes:** I added volumes so data persists when running docker compose down
 - **npx prisma migrate deploy:** always runs through the docker-entrypoint.sh file in case of doing a pull request and new sql files are pulled
 - **globalThis:** the reason for this design decision (singleton pattern) is so we don't reach the limit of connections our database has (https://www.prisma.io/docs/orm/prisma-client/setup-and-configuration/databases-connections#prevent-hot-reloading-from-creating-new-instances-of-prismaclient)
+- **CHOKIDAR_USEPOLLING:** I was testing on windows and linux and on windows hot reload doesn't work without this environment variable set
