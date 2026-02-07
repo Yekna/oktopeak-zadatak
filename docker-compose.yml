@@ -11,19 +11,32 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   api:
-    build: .
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
     ports:
       - "3000:3000"
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/medication_inventory?schema=public
       PORT: "3000"
-      # DISCLAIMER: If using WINDOWS you should uncomment if you want hot reload
-      # CHOKIDAR_USEPOLLING: true
     volumes:
-      - ./src:/app/src
-      - ./prisma:/app/prisma
+      - ./backend/src:/app/src
+      - ./backend/prisma:/app/prisma
     depends_on:
       - db
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://api:3000
+    volumes:
+      - ./frontend/src:/app/src
+    depends_on:
+      - api
 
 volumes:
   pgdata:

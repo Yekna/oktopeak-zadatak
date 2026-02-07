@@ -2,14 +2,14 @@ FROM node:25-alpine
 
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
+COPY backend/package.json backend/package-lock.json* ./
 RUN npm install
 
-COPY prisma ./prisma
-COPY prisma.config.ts ./
+COPY backend/prisma ./prisma
+COPY backend/prisma.config.ts ./
 RUN npx prisma generate
 
-COPY . .
+COPY backend/ .
 
 EXPOSE 3000
 

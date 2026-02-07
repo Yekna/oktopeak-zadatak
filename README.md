@@ -1,14 +1,22 @@
-# Medication Inventory API
+# Medication Inventory
 
-REST API for tracking medication inventory in a healthcare facility. Nurses check out controlled substances, use some amount, and return the remainder. Every transaction must be witnessed and logged for audit.
+Full-stack application for tracking medication inventory in a healthcare facility. Nurses check out controlled substances, use some amount, and return the remainder. Every transaction must be witnessed and logged for audit.
 
 ## Stack
 
+### Backend
 - **Runtime:** Node.js 25 + TypeScript
 - **Framework:** Express 5
 - **Database:** PostgreSQL 18 + Prisma ORM
 - **Validation:** Zod
 - **Testing:** Vitest + Supertest
+
+### Frontend
+- **Framework:** React 19 + TypeScript
+- **Build Tool:** Vite 7
+- **Routing:** React Router 7
+
+### Infrastructure
 - **Containerization:** Docker + Docker Compose
 
 ## Quick Start
@@ -17,7 +25,22 @@ REST API for tracking medication inventory in a healthcare facility. Nurses chec
 docker compose up --build
 ```
 
-The API will be available at `http://localhost:3000`. The database is automatically migrated and seeded on startup.
+| Service | URL |
+|---------|-----|
+| Frontend | http://localhost:5173 |
+| Backend API | http://localhost:3000 |
+| Swagger Docs | http://localhost:3000/api-docs |
+
+The database is automatically migrated and seeded on startup.
+
+## Frontend Pages
+
+| Route | Description |
+|-------|-------------|
+| `/medications` | Browse and create medications |
+| `/medications/:slug` | Medication detail with transaction history |
+| `/transactions` | Browse and create transactions |
+| `/audit-log` | View audit log entries |
 
 ### Seeded Data
 
@@ -84,19 +107,31 @@ curl -X POST http://localhost:3000/api/medications \
 Tests use Vitest with Supertest and a mocked Prisma client (no database required).
 
 ```bash
+cd backend
 npm install
 npm test
 ```
 
 ## Development (without Docker)
 
+**Backend:**
 ```bash
+cd backend
 npm install
 # Set up DATABASE_URL in .env pointing to a running PostgreSQL instance
 npx prisma migrate dev
 npx prisma db seed
 npm run dev
 ```
+
+**Frontend:**
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The Vite dev server proxies `/api` requests to `http://localhost:3000`, so the backend must be running first.
 
 ## Design Decisions
 
@@ -106,6 +141,7 @@ npm run dev
 - **Pagination on all list endpoints:** Every list endpoint supports `?page=` and `?limit=` query params with sensible defaults (page 1, limit 20) as a bonus feature.
 - **Float for stockQuantity:** Uses float to support fractional doses (e.g., 2.5 ml), matching real-world medication dispensing.
 - **Docker entrypoint script:** A shell script waits for PostgreSQL readiness, runs migrations, seeds the database, then starts the app, all with one command (`docker compose up --build`).
-- **Docker volumes:** I added volumes so data persists when running docker compose down
+- **Docker volumes:** Volumes are used so data persists when running docker compose down. Source directories (`backend/src`, `frontend/src`) are mounted for hot reload during development.
 - **npx prisma migrate deploy:** always runs through the docker-entrypoint.sh file in case of doing a pull request and new sql files are pulled
+- **Vite proxy:** The frontend proxies `/api` requests to the backend. In Docker, the proxy target is set via `VITE_API_URL` environment variable (`http://api:3000`), falling back to `http://localhost:3000` for local development.
 - **globalThis:** the reason for this design decision (singleton pattern) is so we don't reach the limit of connections our database has (https://www.prisma.io/docs/orm/prisma-client/setup-and-configuration/databases-connections#prevent-hot-reloading-from-creating-new-instances-of-prismaclient)
