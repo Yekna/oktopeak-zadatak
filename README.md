@@ -145,3 +145,4 @@ The Vite dev server proxies `/api` requests to `http://localhost:3000`, so the b
 - **npx prisma migrate deploy:** always runs through the docker-entrypoint.sh file in case of doing a pull request and new sql files are pulled
 - **Vite proxy:** The frontend proxies `/api` requests to the backend. In Docker, the proxy target is set via `VITE_API_URL` environment variable (`http://api:3000`), falling back to `http://localhost:3000` for local development.
 - **globalThis:** the reason for this design decision (singleton pattern) is so we don't reach the limit of connections our database has (https://www.prisma.io/docs/orm/prisma-client/setup-and-configuration/databases-connections#prevent-hot-reloading-from-creating-new-instances-of-prismaclient)
+- **CHOKIDAR_USEPOLLING:** I was testing on windows and linux and on windows hot reload doesn't work without this environment variable set
