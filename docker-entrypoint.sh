@@ -7,8 +7,8 @@ while ! nc -z db 5432; do
 done
 echo "PostgreSQL is ready."
 
-echo "Pushing database schema..."
-npx prisma db push
+echo "Applying database migrations..."
+npx prisma migrate deploy
 
 echo "Seeding database..."
 npx tsx prisma/seed.ts

@@ -41,6 +41,7 @@ model Medication {
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
   transactions Transaction[]
+  slug         String          @unique
 
   @@map("medications")
 }

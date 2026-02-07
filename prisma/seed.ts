@@ -42,6 +42,7 @@ async function main() {
         schedule: "II",
         unit: "mg",
         stockQuantity: 500,
+        slug: "morphine-sulfate",
       },
     }),
     prisma.medication.create({
@@ -50,6 +51,7 @@ async function main() {
         schedule: "II",
         unit: "mcg",
         stockQuantity: 1000,
+        slug: "fentanyl",
       },
     }),
     prisma.medication.create({
@@ -58,6 +60,7 @@ async function main() {
         schedule: "III",
         unit: "mg",
         stockQuantity: 300,
+        slug: "codein",
       },
     }),
     prisma.medication.create({
@@ -66,6 +69,7 @@ async function main() {
         schedule: "IV",
         unit: "mg",
         stockQuantity: 200,
+        slug: "diazepam",
       },
     }),
     prisma.medication.create({
@@ -74,6 +78,7 @@ async function main() {
         schedule: "V",
         unit: "mg",
         stockQuantity: 750,
+        slug: "pregabalin",
       },
     }),
   ]);
