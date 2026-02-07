@@ -1,6 +1,7 @@
 import { Router } from "express";
 import prisma from "../lib/prisma.js";
 import {
+  createMedicationSchema,
   medicationListQuerySchema,
   medicationSlugParamSchema,
 } from "../schemas/medication.js";
@@ -18,8 +19,8 @@ router.get("/", async (req, res) => {
     where,
     skip,
     take: limit,
-    orderBy: { name: "asc" }
-  })
+    orderBy: { name: "asc" },
+  });
 
   const total = data.length;
 
@@ -55,6 +56,23 @@ router.get("/:slug", async (req, res) => {
   }
 
   res.json({ data });
+});
+
+router.post("/", async (req, res) => {
+  const { name, schedule, slug, stockQuantity, unit } =
+    createMedicationSchema.parse(req.body);
+
+  const data = await prisma.medication.create({
+    data: {
+      name,
+      schedule,
+      slug,
+      unit,
+      stockQuantity,
+    },
+  });
+
+  res.status(201).json({ data });
 });
 
 export default router;

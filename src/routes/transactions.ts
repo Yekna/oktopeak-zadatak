@@ -41,7 +41,7 @@ router.post("/", async (req, res) => {
     );
   }
 
-  const result = await prisma.$transaction(async (tx) => {
+  const data = await prisma.$transaction(async (tx) => {
     if (type === "CHECKOUT") {
       await tx.medication.update({
         where: { id: medicationId },
@@ -91,7 +91,7 @@ router.post("/", async (req, res) => {
     return transaction;
   });
 
-  res.status(201).json({ data: result });
+  res.status(201).json({ data });
 });
 
 router.get("/", async (req, res) => {
