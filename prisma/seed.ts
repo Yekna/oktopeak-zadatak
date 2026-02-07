@@ -60,7 +60,7 @@ async function main() {
         schedule: "III",
         unit: "mg",
         stockQuantity: 300,
-        slug: "codein",
+        slug: "codeine",
       },
     }),
     prisma.medication.create({
